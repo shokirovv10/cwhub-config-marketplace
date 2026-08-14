@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Foydalanuvchilar — CwHUB{% endblock %}
+{% block content %}
+<div class="dashboard-shell"><div>{% include 'partials/dashboard_sidebar.html' %}</div><section class="dashboard-content">
+  <div class="page-head"><div><span class="eyebrow">Boshqaruv markazi</span><h1 class="page-title">Foydalanuvchilar</h1><div class="page-kicker">Akkaunt, xavfsizlik, verifikatsiya, rollar va sotuvchi unvonlarini boshqaring.</div></div></div>
+  <form class="filter-bar" method="get"><div class="field"><input name="q" value="{{ request.args.get('q','') }}" placeholder="Foydalanuvchi yoki email qidirish..."></div><div></div><div></div><div></div><button class="primary-btn-lg">Qidirish</button></form>
+  <div class="admin-user-list">
+  {% for u in users %}
+    <article class="admin-user-card">
+      <div class="admin-user-card-head">
+        <div><div class="admin-user-name"><strong>@{{u.username}}</strong>{% if u.is_verified %}<span class="verified-badge">✓</span>{% endif %}{% if u.seller_title %}<span class="seller-title-badge {{u.seller_title|seller_title_class}}">{{u.seller_title}}</span>{% endif %}</div><div class="small-muted">{{u.email}}{% if u.nickname %} · {{u.nickname}}{% endif %}</div></div>
+        <div class="admin-user-state"><span class="status">{{u.role|uz_role}}</span>{% if u.admin_scope %}<span class="scope-mini">{{u.admin_scope|replace('_',' ')}}</span>{% endif %}<span class="status {{'approved' if u.is_active_user else 'rejected'}}">{{'Faol' if u.is_active_user else 'Bloklangan'}}</span></div>
+      </div>
+      <div class="admin-user-controls">
+        <div class="admin-user-section"><span class="section-label">SOTUVCHI UNVONI</span><form method="post" action="{{url_for('admin.seller_title',id=u.id)}}" class="inline-control"><input type="hidden" name="csrf_token" value="{{csrf_token()}}"><select class="form-select" name="title"><option value="">Avtomatik</option>{% for t in ['Yangi sotuvchi','O‘sayotgan sotuvchi','Pro sotuvchi','Top sotuvchi'] %}<option value="{{t}}" {% if u.seller_title==t %}selected{% endif %}>{{t}}</option>{% endfor %}</select><button class="mini-btn primary">Berish</button></form></div>
+        <div class="admin-user-section"><span class="section-label">AKKAUNT AMALLARI</span><div class="action-row">{% if u.id!=current_user.id and (not u.is_super_admin or current_user.is_super_admin) %}<form method="post" action="{{url_for('admin.toggle_ban',id=u.id)}}"><input type="hidden" name="csrf_token" value="{{csrf_token()}}"><button class="mini-btn">{{'Bloklash' if u.is_active_user else 'Blokdan chiqarish'}}</button></form>{% endif %}<form method="post" action="{{url_for('admin.reset_password',id=u.id)}}"><input type="hidden" name="csrf_token" value="{{csrf_token()}}"><button class="mini-btn">Parolni tiklash</button></form>{% if u.id!=current_user.id and not u.is_super_admin %}<form method="post" action="{{url_for('admin.delete_user',id=u.id)}}" onsubmit="return confirm('Akkaunt anonimlashtirilib o‘chiriladi. Davom etasizmi?')"><input type="hidden" name="csrf_token" value="{{csrf_token()}}"><button class="danger-btn">O‘chirish</button></form>{% endif %}</div></div>
+        <div class="admin-user-section"><span class="section-label">ROL</span>{% if u.id != current_user.id %}<form method="post" action="{{url_for('admin.set_role',id=u.id)}}" class="role-control-form"><input type="hidden" name="csrf_token" value="{{csrf_token()}}"><select name="role" class="form-select">{% for r in ['USER','SELLER','ADMIN','SUPER_ADMIN'] %}<option value="{{r}}" {% if u.role==r %}selected{% endif %}>{{r|uz_role}}</option>{% endfor %}</select><select name="admin_scope" class="form-select"><option value="" {% if not u.admin_scope %}selected{% endif %}>Maxsus vakolatsiz</option><option value="ADMIN" {% if u.admin_scope=='ADMIN' %}selected{% endif %}>To‘liq yordamchi admin</option><option value="MODERATOR" {% if u.admin_scope=='MODERATOR' %}selected{% endif %}>Moderator</option><option value="SUPPORT" {% if u.admin_scope=='SUPPORT' %}selected{% endif %}>Support</option><option value="FINANCE" {% if u.admin_scope=='FINANCE' %}selected{% endif %}>Moliya yordamchisi</option><button class="mini-btn primary">Saqlash</button></form>{% else %}<span class="small-muted">O‘z akkauntingiz uchun rol boshqaruvi bloklangan.</span>{% endif %}</div>
+      </div>
+    </article>
+  {% else %}<div class="panel"><div class="empty-state">Foydalanuvchilar topilmadi.</div></div>{% endfor %}
+  </div>
+</section></div>
+{% endblock %}

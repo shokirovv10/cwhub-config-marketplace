@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}Yordam biletlari — CwHUB{% endblock %}
+{% block content %}
+<div class="page-head"><div><span class="eyebrow">Yordam</span><h1 class="page-title">Biletlarim</h1></div></div>
+<div class="detail-grid" style="grid-template-columns:.8fr 1.2fr"><div class="panel" style="padding:20px"><h3>Yangi murojaat</h3><form method="post" action="{{ url_for('business.create_ticket') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><label>Mavzu<input name="subject" required placeholder="Masalan: To‘lov bo‘yicha yordam kerak"></label><label>Kategoriya<select name="category"><option>TO‘LOV</option><option>CONFIG</option><option>SELLER</option><option>AKKAUNT</option><option>BOSHQA</option></select></label><label>Xabar<textarea name="message" rows="7" required></textarea></label><div class="form-actions"><button class="primary-btn-lg" type="submit">Yuborish</button></div></form></div><div class="panel" style="padding:20px"><h3>Tarix</h3>{% for t in tickets %}<a class="stat-line" href="{{ url_for('business.ticket_detail',id=t.id) }}"><span>#{{ t.id }} · {{ t.subject }}</span><strong>{{ t.status|uz_status }}</strong></a>{% else %}<p class="small-muted">Hali murojaat yo‘q.</p>{% endfor %}</div></div>
+{% endblock %}

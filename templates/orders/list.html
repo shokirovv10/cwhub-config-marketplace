@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}My Purchases — CwHUB{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1 class="page-title">Xaridlarim</h1><div class="page-kicker">Barcha orderlaringiz va yuklab olishlar.</div></div><a class="primary-btn-lg" href="{{ url_for('marketplace.configs') }}">Configlarni ko‘rish →</a></div>
+<div class="panel"><div class="table-wrap"><table class="data-table"><thead><tr><th>Buyurtma</th><th>Tarkib</th><th>Summa</th><th>Holat</th><th>Sana</th><th></th></tr></thead><tbody>{% for o in orders %}<tr><td><strong>{{ o.order_code }}</strong></td><td>{{ o.items|length }}</td><td>{{ '%.0f'|format(o.gross_amount) }} UZS</td><td><span class="status {{ o.status|lower }}">{{ o.status|uz_status }}</span></td><td>{{ o.created_at.strftime('%d.%m.%Y') }}</td><td><a class="mini-btn" href="{{ url_for('orders.detail',id=o.id) }}">Ko‘rish →</a></td></tr>{% else %}<tr><td colspan="6"><div class="empty-state">Hali xaridlar yo‘q.</div></td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

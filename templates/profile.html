@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Profilim — CwHUB{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><span class="eyebrow">Akkaunt</span><h1 class="page-title" style="margin-top:8px">Profilim {% if user.is_verified %}<span class="verified-badge">✓</span>{% endif %}</h1><div class="page-kicker">Shaxsiy ma’lumotlaringiz va marketplace holati.</div></div>
+  <a class="secondary-btn" href="{{ url_for('main.profile_edit') }}">Profilni tahrirlash</a>
+</div>
+<div class="detail-grid">
+  <div class="panel"><div class="panel-body">
+    <div style="display:flex;align-items:center;gap:16px">
+      <div class="profile-avatar-xl">{% if user.avatar %}<img src="{{ url_for('main.avatar', id=user.id) }}" alt="Avatar">{% else %}{{ user.username[:1]|upper }}{% endif %}</div>
+      <div><h2 style="margin:0">@{{ user.username }} {% if user.seller_title %}<span class="seller-title-badge {{ user.seller_title|seller_title_class }}">{{ user.seller_title }}</span>{% endif %} {% if user.is_verified %}<span class="verified-badge">✓</span>{% endif %}</h2><div class="small-muted">{{ user.nickname or 'Nik kiritilmagan' }} · {{ user.role|uz_role }} · {{ user.email }}</div></div>
+    </div>
+    {% if user.description %}<p style="color:var(--muted);line-height:1.7;margin-top:18px;white-space:pre-line">{{ user.description }}</p>{% else %}<p class="small-muted" style="margin-top:18px">Profil tavsifi kiritilmagan.</p>{% endif %}
+  </div></div>
+  <div class="panel"><div class="panel-body">
+    <div class="stats-strip" style="margin:0"><div class="metric-card"><div class="metric-label">Balans</div><div class="metric-value">{{ '%.0f'|format(user.wallet.available_balance if user.wallet else 0) }} UZS</div></div><div class="metric-card"><div class="metric-label">A’zo bo‘lgan yil</div><div class="metric-value">{{ user.created_at.strftime('%Y') }}</div></div></div>
+    <div class="stat-line" style="margin-top:18px"><span>Sotuvchi holati</span><strong>{% if user.sotuvchi_profile and user.sotuvchi_profile.approved %}Tasdiqlangan{% elif user.sotuvchi_profile %}Verifikatsiyada{% else %}Sotuvchi emas{% endif %}</strong></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px"><a class="secondary-btn" href="{{ url_for('orders.index') }}">Xaridlarim</a>{% if not user.sotuvchi_profile %}<a class="primary-btn-lg" href="{{ url_for('seller.apply') }}">Sotuvchi bo‘lish →</a>{% elif user.sotuvchi_profile.approved %}<a class="primary-btn-lg" href="{{ url_for('seller.dashboard') }}">Sotuvchi paneli →</a>{% endif %}</div>
+  </div></div>
+</div>
+{% endblock %}

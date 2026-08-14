@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}CwHUB — Gaming Config Savdo maydoni{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-grid">
+    <span class="eyebrow">CwHUB CS 1.6 Config Savdo maydoni</span>
+    <h1>Kerakli configni toping.<br><span style="color:#a08cff">Aniqroq o‘ynang.</span></h1>
+    <p>CS 1.6 configlarini toping, sotib oling yoki o‘zingiznikini yuklab daromad qiling.</p>
+    <form class="hero-search" action="{{ url_for('marketplace.configs') }}" method="get">
+      <input name="q" placeholder="AWP, recoil, movement, aim..." autocomplete="off">
+      <button type="submit">Config qidirish</button>
+    </form>
+    <div class="hero-pills"><span>⚡ Tezkor to‘lov</span><span>🔒 Xavfsiz yuklab olish</span><span>💸 Sotuvchi daromadi</span><span>🛡 Administrator nazoratida</span></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head"><div><h2 class="section-title">Hozir ommabop</h2><p class="section-sub">Ko‘p ko‘rilayotgan va sotilayotgan configlar.</p></div><a class="text-link" href="{{ url_for('marketplace.configs', sort='popular') }}">Barchasini ko‘rish →</a></div>
+  <div class="config-grid">
+    {% for c in popular %}<div>{% include '_config_card.html' %}</div>{% else %}<div class="empty-state" style="grid-column:1/-1"><h3>Hali config yo‘q</h3><p>Birinchi configni siz yuklang.</p><a class="primary-btn-lg" href="{{ url_for('seller.apply') }}">Sotishni boshlash</a></div>{% endfor %}
+  </div>
+</section>
+
+<section class="section" id="categories">
+  <div class="section-head"><div><h2 class="section-title">Kategoriya bo‘yicha toping</h2><p class="section-sub">Kerakli turdagi configni bir klikda toping.</p></div></div>
+  <div class="category-grid">
+    {% for category in categories %}
+      <a class="category-card" href="{{ url_for('marketplace.configs', category=category.id) }}"><span>Kategoriya</span><strong>{{ category.name }}</strong></a>
+    {% else %}<div class="empty-state" style="grid-column:1/-1">Kategoriyalar shu yerda ko‘rinadi.</div>{% endfor %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head"><div><h2 class="section-title">Yangi yuklanganlar</h2><p class="section-sub">Savdo maydoniga yangi qo‘shilgan configlar.</p></div><a class="text-link" href="{{ url_for('marketplace.configs') }}">Barchasini ko‘rish →</a></div>
+  <div class="config-grid">{% for c in latest %}<div>{% include '_config_card.html' %}</div>{% else %}<div class="empty-state" style="grid-column:1/-1">Hozircha configlar yo‘q.</div>{% endfor %}</div>
+</section>
+
+<section class="section">
+  <div class="section-head"><div><h2 class="section-title">Top sotuvchilar</h2><p class="section-sub">Tasdiqlangan va faol sotuvchilar.</p></div></div>
+  <div class="sotuvchi-grid">
+    {% for s in sotuvchis %}
+    <a class="sotuvchi-card" href="{{ url_for('main.seller_public', nickname=s.nickname) }}">
+      <div class="sotuvchi-line"><div class="sotuvchi-avatar">{{ s.nickname[:1]|upper }}</div><div><strong>@{{ s.nickname }}</strong><p>{{ s.configs|selectattr('status','equalto','APPROVED')|list|length }} tasdiqlangan config</p></div></div>
+    </a>
+    {% else %}<div class="empty-state" style="grid-column:1/-1">Hozircha sotuvchilar yo‘q.</div>{% endfor %}
+  </div>
+</section>
+
+<section class="section" id="how-it-works">
+  <div class="section-head"><div><h2 class="section-title">CwHUB qanday ishlaydi</h2><p class="section-sub">Oddiy foydalanish. Kuchli himoya.</p></div></div>
+  <div class="feature-grid">
+    <div class="feature"><div class="feature-icon">01</div><strong>Toping</strong><p>Qidirish, filtrlash va reytinglar orqali kerakli configni toping.</p></div>
+    <div class="feature"><div class="feature-icon">02</div><strong>Sotib oling va yuklang</strong><p>Qo‘lda to‘lov tasdiqlangach, xavfsiz yuklab olish darhol ochiladi.</p></div>
+    <div class="feature"><div class="feature-icon">03</div><strong>Soting va daromad qiling</strong><p>Config upload qiling, moderatsiyadan o‘tkazing va sotuvdan ulush oling.</p></div>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="panel"><div class="panel-body"><div class="section-head"><div><h2 class="section-title">Configingizni sotishga tayyormisiz?</h2><p class="section-sub">Sotuvchi bo‘lib o‘z configlaringizni soting.</p></div><a class="primary-btn-lg" href="{{ url_for('seller.apply') }}">Sotuvchi bo‘lish →</a></div></div></div>
+</section>
+{% endblock %}

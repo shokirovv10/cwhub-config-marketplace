@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}@{{ seller.nickname }} — CwHUB Sotuvchisi{% endblock %}
+{% block content %}
+<div class="panel"><div class="panel-body"><div style="display:flex;align-items:center;gap:15px"><div class="sotuvchi-avatar" style="width:58px;height:58px">{{ seller.nickname[:1]|upper }}</div><div><span class="eyebrow">Tasdiqlangan sotuvchi</span><h1 class="page-title" style="margin-top:8px">@{{ seller.nickname }} {% if seller.user.seller_title %}<span class="seller-title-badge {{ seller.user.seller_title|seller_title_class }}">{{ seller.user.seller_title }}</span>{% endif %}</h1><div class="page-kicker">Sotuvchi boshlangan yil {{ seller.created_at.strftime('%Y') }} · {{ sales_count }} sotuv · {{ avg }} ★</div></div></div><p style="color:var(--muted);max-width:760px;line-height:1.6;margin-top:16px">{{ seller.description or 'CwHUB tasdiqlangan sotuvchisi.' }}</p></div></div>
+<section class="section"><div class="section-head"><div><h2 class="section-title">Joylangan configlar</h2><p class="section-sub">{{ configs|length }} mavjud config.</p></div></div><div class="config-grid">{% for c in configs %}<div>{% include '_config_card.html' %}</div>{% else %}<div class="empty-state" style="grid-column:1/-1">Hali tasdiqlangan configlar yo‘q.</div>{% endfor %}</div></section>
+{% endblock %}

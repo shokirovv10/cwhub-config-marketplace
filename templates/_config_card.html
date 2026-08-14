@@ -1,0 +1,13 @@
+<article class="config-card">
+  <a class="config-media" href="{{ url_for('marketplace.config_detail', slug=c.slug) }}">
+    {% if c.main_image %}<img src="{{ url_for('marketplace.media_image', id=c.id) }}" alt="{{ c.name }}" loading="lazy">{% else %}<img src="{{ url_for('static', filename='images/placeholder.svg') }}" alt="" loading="lazy">{% endif %}
+    <span class="config-badge">{{ c.game.name if c.game is defined and c.game else 'CS 1.6' }}</span>
+  </a>
+  <div class="config-body">
+    <div class="config-meta">{{ c.category.name if c.category is defined and c.category else 'Boshqa' }} · {{ c.version or 'Barqaror' }}</div>
+    <div class="config-name">{{ c.name }}</div>
+    <div class="config-description">{{ c.short_description or c.description[:90] }}</div>
+    <div class="config-sotuvchi">Sotuvchi: <a href="{{ url_for('main.seller_public', nickname=c.seller.nickname) }}">@{{ c.seller.nickname if c.sotuvchi is defined and c.sotuvchi else 'Noma’lum' }}{% if c.sotuvchi is defined and c.sotuvchi and c.seller.user is defined and c.seller.user and c.seller.user.is_verified %}<span class="verified-badge">✓</span>{% endif %}</a></div>
+    <div class="config-bottom"><div><div class="price">{{ '%.0f'|format(c.price) }} UZS</div><div class="small-muted">{{ c.download_count }} yuklab olish</div></div><a class="mini-btn primary" href="{{ url_for('marketplace.config_detail', slug=c.slug) }}">Ko‘rish</a></div>
+  </div>
+</article>

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Tariflarim — CwHUB{% endblock %}
+{% block content %}
+<div class="page-head"><div><span class="eyebrow">Sotuvchi</span><h1 class="page-title">Tariflarim</h1><div class="page-kicker">Sizga mos tarifni tanlang.</div></div></div>
+{% if active %}<div class="panel" style="padding:20px;margin-bottom:18px"><strong>Faol tarif: {{ active.plan.name }}</strong><div class="small-muted">Tugash sanasi: {{ active.expires_at.strftime('%d.%m.%Y') if active.expires_at else '—' }}</div></div>{% endif %}
+<div class="feature-grid">{% for p in plans %}<div class="panel" style="padding:22px"><h2>{{ p.name }}</h2><div class="detail-price">{{ '%.0f'|format(p.monthly_price) }} UZS/oy</div><p>{{ p.description }}</p><div class="small-muted">Komissiya: {{ '%.0f'|format(p.commission_rate) }}% · Limit: {{ p.product_limit }} ta</div><form method="post" action="{{ url_for('business.request_plan',plan_id=p.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="primary-btn-lg" style="width:100%;margin-top:16px">Shu tarifni tanlash</button></form></div>{% endfor %}</div>
+<div class="seller-level-section" id="darajalar">
+  <div class="panel-head" style="padding:0 0 4px"><div><span class="eyebrow">Sotuvchi darajalari</span><h2 style="margin:.45rem 0 .2rem">Sizning darajangiz qanday aniqlanadi?</h2><div class="small-muted">Savdo soni va o‘rtacha reyting avtomatik hisoblanadi.</div></div></div>
+  <div class="seller-level-grid">
+    <div class="seller-level-card level-new"><span class="seller-level-rank">01</span><h3>Yangi sotuvchi</h3><p>Boshlang‘ich bosqich.</p><div class="level-rule">10 tadan kam yakunlangan savdo</div></div>
+    <div class="seller-level-card level-grow"><span class="seller-level-rank">02</span><h3>O‘sayotgan sotuvchi</h3><p>Faol savdosi boshlagan sotuvchi.</p><div class="level-rule">10+ savdo</div></div>
+    <div class="seller-level-card level-pro"><span class="seller-level-rank">03</span><h3>Pro sotuvchi</h3><p>Barqaror va ishonchli natija.</p><div class="level-rule">30+ savdo · 4.5★+</div></div>
+    <div class="seller-level-card level-top"><span class="seller-level-rank">04</span><h3>Top sotuvchi</h3><p>Marketplace’ning eng faol sotuvchilari.</p><div class="level-rule">100+ savdo · 4.7★+</div></div>
+  </div>
+</div>
+
+<div class="panel" style="margin-top:18px;padding:20px"><h3>Tarix</h3>{% for s in history %}<div class="stat-line"><span>{{ s.plan.name }} · {{ s.created_at.strftime('%d.%m.%Y') }}</span><strong>{{ s.status|uz_status }}</strong></div>{% else %}<p class="small-muted">Hali tarif so‘rovlari yo‘q.</p>{% endfor %}</div>
+{% endblock %}

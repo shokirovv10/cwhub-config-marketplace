@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}Akkaunt yaratish — CwHUB{% endblock %}
+{% block content %}
+<div class="auth-layout"><div class="auth-card"><span class="eyebrow">Bir necha soniyada boshlang</span><h1>Akkaunt yaratish</h1><p style="color:var(--muted)">Sotib olisher bo‘ling yoki keyin sotuvchi sifatida boshlang.</p><form method="post" style="margin-top:20px"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% for f in [form.username,form.email,form.password,form.confirm] %}<div class="field" style="margin-bottom:13px"><label class="label">{{ f.label.text }}</label>{{ f(class='form-control') }}{% for e in f.errors %}<div class="hint" style="color:var(--danger)">{{ e }}</div>{% endfor %}</div>{% endfor %}<button class="primary-btn-lg" style="width:100%">Akkaunt yaratish →</button></form><div class="divider"></div><div style="text-align:center;color:var(--muted);font-size:.8rem">Avval ro‘yxatdan o‘tganmisiz? <a class="text-link" href="{{ url_for('auth.login') }}">Kirish</a></div></div></div>
+{% endblock %}

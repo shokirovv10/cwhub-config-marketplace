@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}Verifikatsiya Holat — CwHUB{% endblock %}
+{% block content %}
+<div class="empty-state" style="max-width:760px;margin:50px auto"><div class="feature-icon" style="margin:0 auto 14px">✓</div><h1>Sotuvchi verifikatsiyasi</h1>{% if seller.verification_status == 'APPROVED' %}<p>Verifikatsiya tasdiqlandi. Endi sotuvchi panelidan foydalanishingiz mumkin.</p><a class="primary-btn-lg" href="{{ url_for('seller.dashboard') }}">Sotuvchi panelini ochish →</a>{% elif seller.verification_status == 'REJECTED' %}<p>Verifikatsiya rad etildi.</p><div class="hint">{{ seller.verification_reject_reason or 'Administrator sabab qoldirmadi.' }}</div><a class="primary-btn-lg" style="margin-top:14px" href="{{ url_for('seller.apply') }}">Qayta yuborish</a>{% else %}<p>Hujjatingiz qabul qilindi. Administrator tekshiruvini kuting.</p><div class="status pending">TEKSHIRILMOQDA</div>{% endif %}</div>
+{% endblock %}

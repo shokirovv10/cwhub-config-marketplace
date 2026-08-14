@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}Sevimlilar — CwHUB{% endblock %}
+{% block content %}
+<div class="container section"><div class="page-head"><div><span class="eyebrow">Shaxsiy kutubxona</span><h1 class="page-title" style="margin-top:9px">Sevimlilar</h1><div class="page-kicker">Keyinroq ko‘rish uchun saqlagan configlaringiz.</div></div><a class="secondary-btn" href="{{ url_for('marketplace.configs') }}">Configlarni ko‘rish →</a></div>
+<div class="config-grid">{% for item in items %}{% set c=item.config %}{% include '_config_card.html' %}{% else %}<div class="empty-state" style="grid-column:1/-1">Hali sevimli config yo‘q.</div>{% endfor %}</div></div>
+{% endblock %}

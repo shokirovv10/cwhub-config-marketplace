@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Configni tahrirlash' if editing else 'Config yuklash' }} — CwHUB{% endblock %}
+{% block content %}
+<div class="form-shell">
+  <div class="page-head"><div><span class="eyebrow">Sotuvchi paneli</span><h1 class="page-title" style="margin-top:9px">{{ 'Configni tahrirlash' if editing else 'Yangi config yuklash' }}</h1><div class="page-kicker">CS 1.6 marketplace uchun chiroyli va aniq listing yarating.</div></div><a class="secondary-btn" href="{{ url_for('seller.configs') }}">← Configlarim</a></div>
+  <div class="panel"><div class="panel-body">
+    <form method="post" enctype="multipart/form-data" data-chunk-upload>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-grid">
+        <div class="field"><label class="label">Config nomi *</label>{{ form.name(class='form-control',placeholder='Masalan: CwHUB Pro Aim') }}</div>
+        <div class="field"><label class="label">Narx (UZS) *</label>{{ form.price(class='form-control',placeholder='25000') }}</div>
+        <div class="field"><label class="label">O‘yin *</label>{{ form.game_id(class='form-select') }}</div>
+        <div class="field"><label class="label">Config turi *</label>{{ form.type_id(class='form-select') }}</div>
+        <div class="field"><label class="label">Kategoriya *</label>{{ form.category_id(class='form-select') }}</div>
+        <div class="field"><label class="label">Versiya</label>{{ form.version(class='form-control',placeholder='1.0') }}</div>
+        <div class="field"><label class="label">Teglar</label>{{ form.tags(class='form-control',placeholder='aim, no recoil, movement') }}</div>
+        <div class="field full"><label class="label">Qisqa tavsif</label>{{ form.short_description(class='form-control',placeholder='Configning qisqa va tushunarli mazmuni') }}</div>
+        <div class="field full"><label class="label">To‘liq tavsif <span class="small-muted">(ixtiyoriy)</span></label>{{ form.description(class='form-control',rows='6',placeholder='Qo‘shimcha ma’lumot yozishingiz mumkin, lekin bu maydon majburiy emas.') }}</div>
+        <div class="field full"><label class="label">Demo / video manzili <span class="small-muted">(ixtiyoriy)</span></label>{{ form.demo_url(class='form-control',placeholder='https://...') }}</div>
+        <div class="field">
+          <label class="label">Muqova rasmi</label>
+          <label class="upload-drop upload-image" data-dropzone>
+            <input type="file" name="cover_image" accept=".png,.jpg,.jpeg,.webp" data-preview="cover-preview" data-upload-kind="cover_image" data-token-name="cover_image_token" data-progress-box="cover-progress">
+            {% if config and config.main_image %}<span class="upload-frame"><img class="upload-preview" id="cover-preview" src="{{ url_for('seller.config_image',id=config.id) }}" alt="Muqova"></span>{% else %}<span class="upload-frame"><img class="upload-preview" id="cover-preview" style="display:none" alt="Muqova"></span>{% endif %}
+            <strong>Rasmni tanlang yoki shu yerga tashlang</strong><div class="hint">PNG / JPG / WEBP · rasm kesilmaydi</div><div class="file-selected" data-file-name><span>Tanlangan fayl:</span> —</div>
+          </label>
+          <div class="upload-progress" id="cover-progress"><div class="progress-track"><div class="progress-bar"></div></div><div class="progress-meta"><span data-progress-meta>Rasm tayyorlanmoqda...</span><span data-progress-percent>0%</span></div></div>
+        </div>
+        <div class="field">
+          <label class="label">Config fayli {% if not editing %}*{% else %}<span class="small-muted">(yangi fayl ixtiyoriy)</span>{% endif %}</label>
+          <label class="upload-drop" data-dropzone><input type="file" name="config_file" accept=".cfg,.zip,.rar,.txt" data-upload-kind="config_file" data-token-name="config_file_token" data-progress-box="config-progress"><span class="upload-icon">⇧</span><strong>Config faylini tanlang</strong><div class="hint">.cfg, .zip, .rar, .txt</div><div class="file-selected" data-file-name><span>Tanlangan fayl:</span> {% if config %}{{ config.file_original_name }}{% else %}—{% endif %}</div></label>
+          <div class="upload-progress" id="config-progress"><div class="progress-track"><div class="progress-bar"></div></div><div class="progress-meta"><span data-progress-meta>Fayl tayyorlanmoqda...</span><span data-progress-percent>0%</span></div></div>
+        </div>
+        <div class="full">
+          <div class="async-overlay" data-async-overlay><div class="async-overlay-card"><strong>Fayllar yuklanmoqda…</strong><p class="small-muted">Sahifa qotmaydi. Yuklash tugashi bilan forma avtomatik yuboriladi.</p><div class="progress-track"><div class="progress-bar" data-global-progress></div></div></div></div>
+          <button class="primary-btn-lg async-submit" type="submit">{{ 'O‘zgarishlarni saqlash' if editing else 'Configni yuborish' }} →</button>
+          <a class="secondary-btn" style="margin-left:8px" href="{{ url_for('seller.dashboard') }}">Orqaga qaytish</a>
+        </div>
+      </div>
+    </form>
+  </div></div>
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Configlar ro‘yxati — CwHUB{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1 class="page-title">Configlarni ko‘rish</h1><div class="page-kicker">{{ page.total }} ta natija · Qidiring, saralang va xarid qiling.</div></div><a class="secondary-btn" href="{{ url_for('seller.add_config') }}">+ Config yuklash</a></div>
+<form class="filter-bar" method="get">
+  <div class="field"><input name="q" value="{{ request.args.get('q','') }}" placeholder="Nom, teg yoki tavsif bo‘yicha qidiring..."></div>
+  <div class="field"><select name="game"><option value="">Barcha o‘yinlar</option>{% for g in games %}<option value="{{ g.id }}" {% if request.args.get('game','')|int == g.id %}selected{% endif %}>{{ g.name }}</option>{% endfor %}</select></div>
+  <div class="field"><select name="type"><option value="">Barcha turlar</option>{% for t in types %}<option value="{{ t.id }}" {% if request.args.get('type','')|int == t.id %}selected{% endif %}>{{ t.name }}</option>{% endfor %}</select></div>
+  <div class="field"><select name="category"><option value="">Barcha kategoriyalar</option>{% for c in categories %}<option value="{{ c.id }}" {% if request.args.get('category','')|int == c.id %}selected{% endif %}>{{ c.name }}</option>{% endfor %}</select></div>
+  <div class="field"><select name="sort"><option value="newest" {% if request.args.get('sort','newest')=='newest' %}selected{% endif %}>Yangi</option><option value="popular" {% if request.args.get('sort')=='popular' %}selected{% endif %}>Ommabop</option><option value="price_low" {% if request.args.get('sort')=='price_low' %}selected{% endif %}>Arzonidan</option><option value="price_high" {% if request.args.get('sort')=='price_high' %}selected{% endif %}>Qimmatidan</option></select></div>
+  <button class="primary-btn-lg" type="submit">Saralash</button>
+</form>
+<div class="config-grid">{% for c in page.items %}<div>{% include '_config_card.html' %}</div>{% else %}<div class="empty-state" style="grid-column:1/-1"><h3>Hech narsa topilmadi</h3><p>Qidiruvni o‘zgartirib ko‘ring.</p></div>{% endfor %}</div>
+{% if page.pages > 1 %}<div style="display:flex;justify-content:center;gap:7px;margin-top:24px;flex-wrap:wrap">{% for p in page.iter_pages() %}{% if p %}<a class="mini-btn {% if p == page.page %}primary{% endif %}" href="{{ url_for('marketplace.configs', page=p, q=request.args.get('q',''), game=request.args.get('game',''), type=request.args.get('type',''), category=request.args.get('category',''), sort=request.args.get('sort','newest')) }}">{{ p }}</a>{% endif %}{% endfor %}</div>{% endif %}
+{% endblock %}

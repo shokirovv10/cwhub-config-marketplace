@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}Activity Log — CwHUB{% endblock %}
+{% block content %}
+<div class="dashboard-shell"><div>{% include 'partials/dashboard_sidebar.html' %}</div><section class="dashboard-content"><div class="page-head"><div><h1 class="page-title">Faoliyat tarixi</h1><div class="page-kicker">Administrator amallari tarixi.</div></div></div><div class="panel"><div class="table-wrap"><table class="data-table"><thead><tr><th>Sana</th><th>Amal</th><th>Nishon</th><th>Tafsilotlar</th><th>IP manzil</th></tr></thead><tbody>{% for l in logs %}<tr><td>{{ l.created_at.strftime('%d.%m.%Y %H:%M') }}</td><td><strong>{{ l.action }}</strong></td><td>{{ l.target or '—' }}</td><td class="small-muted">{{ l.details or '—' }}</td><td>{{ l.ip or '—' }}</td></tr>{% else %}<tr><td colspan="5"><div class="empty-state">Hali faoliyat yo‘q.</div></td></tr>{% endfor %}</tbody></table></div></div></section></div>
+{% endblock %}

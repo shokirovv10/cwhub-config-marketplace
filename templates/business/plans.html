@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Sotuvchi tariflari — CwHUB{% endblock %}
+{% block content %}
+<div class="container section"><div class="page-head"><div><span class="eyebrow">Biznes imkoniyatlari</span><h1 class="page-title">Sotuvchi tariflari</h1><div class="page-kicker">Ko‘proq config, pastroq komissiya va ustuvor moderatsiya.</div></div></div>
+<div class="feature-grid">
+{% for p in plans %}<div class="panel" style="padding:24px;position:relative">{% if p.highlighted %}<span class="status approved" style="position:absolute;top:18px;right:18px">Tavsiya</span>{% endif %}<h2>{{ p.name }}</h2><div class="detail-price">{{ '%.0f'|format(p.monthly_price) }} UZS <small>/ oy</small></div><p class="small-muted">Komissiya: {{ '%.0f'|format(p.commission_rate) }}% · {{ p.product_limit }} ta faol config</p><p>{{ p.description }}</p><ul class="check-list"><li>Marketplace’da sotuv</li><li>{% if p.priority_moderation %}Ustuvor moderatsiya{% else %}Standart moderatsiya{% endif %}</li><li>Seller statistikasi</li></ul><a class="primary-btn-lg" href="{{ url_for('business.plan_detail', slug=p.slug) }}">Batafsil ma’lumot →</a></div>{% endfor %}</div></div>
+<div class="seller-level-section" id="darajalar">
+  <div class="panel-head" style="padding:0 0 4px">
+    <div><span class="eyebrow">Sotuvchi darajalari</span><h2 style="margin:.45rem 0 .2rem">Yangi sotuvchidan Top sotuvchigacha</h2><div class="small-muted">Daraja savdo, reyting va faoliyat natijalariga qarab avtomatik belgilanadi.</div></div>
+  </div>
+  <div class="seller-level-grid">
+    <div class="seller-level-card level-new"><span class="seller-level-rank">01 · BOSHLANG‘ICH</span><h3>Yangi sotuvchi</h3><p>Marketplace’ga endi qo‘shilgan sotuvchilar uchun boshlang‘ich daraja.</p><strong>Afzalliklar</strong><div class="level-rule">Yangi profil · bazaviy statistika · standart moderatsiya</div></div>
+    <div class="seller-level-card level-grow"><span class="seller-level-rank">02 · O‘SISH</span><h3>O‘sayotgan sotuvchi</h3><p>Faolligi oshayotgan va dastlabki natijalarini ko‘rsatayotgan sotuvchi.</p><strong>Mezon</strong><div class="level-rule">10+ yakunlangan savdo</div></div>
+    <div class="seller-level-card level-pro"><span class="seller-level-rank">03 · PROFESSIONAL</span><h3>Pro sotuvchi</h3><p>Barqaror savdo va yaxshi reytingga ega tajribali sotuvchi.</p><strong>Mezon</strong><div class="level-rule">30+ savdo va 4.5★+ o‘rtacha reyting</div></div>
+    <div class="seller-level-card level-top"><span class="seller-level-rank">04 · ELITA</span><h3>Top sotuvchi</h3><p>Marketplace’dagi eng ishonchli va faol sotuvchilar darajasi.</p><strong>Mezon</strong><div class="level-rule">100+ savdo va 4.7★+ o‘rtacha reyting</div></div>
+  </div>
+  <div class="levels-note">Darajalar tizim tomonidan avtomatik hisoblanadi; admin zaruratga ko‘ra platforma qoidalarini yangilashi mumkin.</div>
+</div>
+
+{% endblock %}

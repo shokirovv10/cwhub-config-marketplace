@@ -1,0 +1,18 @@
+<aside class="dash-sidebar" data-sidebar>
+  <div class="sidebar-close mobile-only"><button class="icon-btn" data-sidebar-close>×</button></div>
+  <div class="sidebar-kicker">{{ sidebar_kicker }}</div>
+  <div class="sidebar-title">{{ sidebar_title }}</div>
+  <nav class="side-nav">
+    {% for item in sidebar_items %}
+      <a class="side-nav-item {% if request.endpoint == item.endpoint %}active{% endif %}" href="{{ url_for(item.endpoint, **item.kwargs) }}">
+        <span class="side-icon">{{ item.icon }}</span><span>{{ item.label }}</span>{% if item.badge %}<b class="side-badge">{{ item.badge }}</b>{% endif %}
+      </a>
+    {% endfor %}
+  </nav>
+  {% if sidebar_cta %}
+    <a class="sidebar-cta" href="{{ url_for(sidebar_cta.endpoint, **sidebar_cta.kwargs) }}"><span>+</span>{{ sidebar_cta.label }}</a>
+  {% endif %}
+  <div class="sidebar-bottom">
+    <a class="side-nav-item" href="{{ url_for('main.index') }}"><span class="side-icon">⌂</span><span>Savdo maydoni</span></a>
+  </div>
+</aside>

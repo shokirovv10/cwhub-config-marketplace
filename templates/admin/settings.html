@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Sozlamalar — CwHUB{% endblock %}
+{% block content %}
+<div class="dashboard-shell">
+  <div>{% include 'partials/dashboard_sidebar.html' %}</div>
+  <section class="dashboard-content">
+    <div class="page-head">
+      <div>
+        <span class="eyebrow">Platforma boshqaruvi</span>
+        <h1 class="page-title" style="margin-top:9px">Sozlamalar</h1>
+        <div class="page-kicker">Savdo maydoni, to‘lov, xavfsizlik va moderatsiya parametrlarini boshqaring.</div>
+      </div>
+      <a class="secondary-btn" href="{{ url_for('admin.settings') }}#cards">↓ Karta bo‘limi</a>
+    </div>
+
+    <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <div class="panel">
+        <div class="panel-head"><div><strong>Savdo maydoni sozlamalari</strong><div class="small-muted">Asosiy moliyaviy va kontent qoidalari.</div></div></div>
+        <div class="panel-body">
+          <div class="form-grid">
+            <div class="field"><label class="label">Platforma komissiyasi (%)</label><input class="form-control" name="commission_rate" value="{{ settings.commission_rate }}"></div>
+            <div class="field"><label class="label">Minimal pul yechish (UZS)</label><input class="form-control" name="minimum_withdrawal" value="{{ settings.minimum_withdrawal }}"></div>
+            <div class="field full"><label class="label">Ruxsat etilgan config kengaytmalari</label><input class="form-control" name="allowed_extensions" value="{{ settings.allowed_extensions }}"><div class="hint">Masalan: cfg,zip,rar,txt. Vergul bilan ajrating.</div></div>
+          </div>
+
+          <div class="settings-toggle-grid">
+            <label class="settings-toggle-card">
+              <div class="toggle-copy"><strong>Sinov rejimi</strong><span>To‘lov va withdrawal oqimlarini xavfsiz test qilish uchun foydalaning.</span></div>
+              <span class="toggle-control"><input type="checkbox" name="test_mode" {% if settings.test_mode %}checked{% endif %}><span class="toggle-track"><span></span></span></span>
+            </label>
+            <label class="settings-toggle-card">
+              <div class="toggle-copy"><strong>Configlarni avtomatik tasdiqlash</strong><span>Yangi configlar moderatsiyasiz avtomatik nashr qilinadi.</span></div>
+              <span class="toggle-control"><input type="checkbox" name="auto_approve_products" {% if settings.auto_approve_products %}checked{% endif %}><span class="toggle-track"><span></span></span></span>
+            </label>
+            <label class="settings-toggle-card warning-card">
+              <div class="toggle-copy"><strong>Texnik xizmat rejimi</strong><span>Oddiy tashrif buyuruvchilar uchun sayt vaqtincha yopiladi. Administratorlar ishlashda davom etadi.</span></div>
+              <span class="toggle-control"><input type="checkbox" name="maintenance_mode" {% if settings.maintenance_mode %}checked{% endif %}><span class="toggle-track"><span></span></span></span>
+            </label>
+          </div>
+          <div class="settings-note">Sotuvchi verifikatsiyasi har doim administrator tasdig‘i bilan amalga oshiriladi.</div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:14px">
+        <div class="panel-head"><div><strong>To‘lov sozlamalari</strong><div class="small-muted">Qaysi to‘lov usullari ko‘rinishini boshqaring.</div></div></div>
+        <div class="panel-body">
+          <div class="settings-toggle-grid compact">
+            <label class="settings-toggle-card"><div class="toggle-copy"><strong>Qo‘lda to‘lov</strong><span>Karta va chek orqali to‘lov.</span></div><span class="toggle-control"><input type="checkbox" name="manual_enabled" {% if payment.manual_enabled %}checked{% endif %}><span class="toggle-track"><span></span></span></span></label>
+            <label class="settings-toggle-card"><div class="toggle-copy"><strong>Click</strong><span>Ulanish uchun tayyor holat.</span></div><span class="toggle-control"><input type="checkbox" name="click_enabled" {% if payment.click_enabled %}checked{% endif %}><span class="toggle-track"><span></span></span></span></label>
+            <label class="settings-toggle-card"><div class="toggle-copy"><strong>Payme</strong><span>Ulanish uchun tayyor holat.</span></div><span class="toggle-control"><input type="checkbox" name="payme_enabled" {% if payment.payme_enabled %}checked{% endif %}><span class="toggle-track"><span></span></span></span></label>
+          </div>
+          <div class="field full" style="margin-top:14px"><label class="label">To‘lov bo‘yicha ko‘rsatma</label><textarea class="form-control" name="instructions" rows="5">{{ payment.instructions or '' }}</textarea></div>
+        </div>
+      </div>
+
+      <button class="primary-btn-lg settings-save" type="submit">Sozlamalarni saqlash <span>→</span></button>
+    </form>
+
+    <div class="panel" id="cards" style="margin-top:14px">
+      <div class="panel-head"><div><strong>To‘lov kartalari</strong><div class="small-muted">Xaridorlarga ko‘rsatiladigan faol kartalar shu yerda boshqariladi.</div></div><span class="status approved">{{ cards|length }} ta karta</span></div>
+      <div class="panel-body">
+        <form method="post" action="{{ url_for('admin.add_card') }}" class="form-grid" style="margin-bottom:20px">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="field"><label class="label">Karta nomi</label><input class="form-control" name="label" placeholder="Asosiy karta"></div>
+          <div class="field"><label class="label">Karta egasi *</label><input class="form-control" name="card_owner" required placeholder="CwHUB"></div>
+          <div class="field full"><label class="label">Karta raqami *</label><input class="form-control" name="card_number" required placeholder="8600 1234 5678 9012"></div>
+          <div class="full"><button class="secondary-btn">+ Yangi karta qo‘shish</button></div>
+        </form>
+        <div class="table-wrap"><table class="data-table"><thead><tr><th>Nomi</th><th>Karta</th><th>Egasi</th><th>Holat</th><th>Amallar</th></tr></thead><tbody>
+        {% for card in cards %}<tr><td><strong>{{ card.label }}</strong></td><td>{{ card.masked_number }}</td><td>{{ card.card_owner }}</td><td><span class="status {{ 'approved' if card.enabled else 'hidden' }}">{{ 'FAOL' if card.enabled else 'O‘CHIRILGAN' }}</span></td><td><div style="display:flex;gap:6px"><form method="post" action="{{ url_for('admin.toggle_card',id=card.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="mini-btn">{{ 'O‘chirish' if card.enabled else 'Yoqish' }}</button></form><form method="post" action="{{ url_for('admin.delete_card',id=card.id) }}" data-confirm="Kartani o‘chirishni tasdiqlaysizmi?"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="danger-btn">O‘chirish</button></form></div></td></tr>
+        {% else %}<tr><td colspan="5"><div class="empty-state">Hali karta qo‘shilmagan. Yuqoridagi forma orqali birinchi kartani qo‘shing.</div></td></tr>{% endfor %}
+        </tbody></table></div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}{{ config.name }} — CwHUB{% endblock %}
+{% block content %}
+<div class="detail-grid">
+  <div>
+    <div class="detail-hero">{% if config.main_image %}<img src="{{ url_for('marketplace.media_image', id=config.id) }}" alt="{{ config.name }}">{% else %}<img src="{{ url_for('static', filename='images/placeholder.svg') }}" alt="">{% endif %}</div>
+    <div class="panel" style="margin-top:16px"><div class="panel-body"><div class="config-meta">{{ config.game.name if config.game is defined and config.game else 'CS 1.6' }} · {{ config.config_type.name if config.config_type is defined and config.config_type else 'Boshqa' }} · {{ config.category.name if config.category is defined and config.category else 'Boshqa' }}</div><h1 class="detail-title">{{ config.name }}</h1><p style="color:var(--muted);line-height:1.7">{{ config.description }}</p><div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:16px">{% for tag in (config.tags or '').split(',') if tag.strip() %}<span class="status">#{{ tag.strip() }}</span>{% endfor %}</div></div></div>
+    <div class="panel" style="margin-top:16px"><div class="panel-head"><strong>Sharhlar</strong><span class="small-muted">{{ avg }} / 5</span></div><div class="panel-body"><div class="review-list">{% for r in config.reviews|sort(attribute='created_at',reverse=true) %}<div class="review-item"><div class="review-top"><strong>{{ r.user.username }}</strong><span>{{ '★' * r.rating }}</span></div><div style="color:var(--muted);margin-top:7px">{{ r.comment or 'Izoh yo‘q.' }}</div></div>{% else %}<div class="empty-state">Hali review yo‘q.</div>{% endfor %}</div>{% if purchased %}<form method="post" action="{{ url_for('marketplace.review', slug=config.slug) }}" style="margin-top:14px"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><div class="form-grid"><div class="field"><label class="label">Baho</label><input type="number" name="rating" min="1" max="5" value="5"></div><div class="field"><label class="label">Izoh</label><input name="comment" placeholder="Sharhingizni yozing..."></div><div class="full"><button class="primary-btn-lg" type="submit">Sharhni yuborish</button></div></div></form>{% endif %}</div></div>
+  </div>
+  <aside class="sticky-card">
+    <div class="panel"><div class="panel-body">
+      <div class="small-muted">SOTUVCHI</div><a class="text-link" href="{{ url_for('main.seller_public', nickname=(config.seller.nickname if config.seller else '')) }}">@{{ config.seller.nickname if config.seller else 'Noma’lum' }}</a>
+      <h2 style="margin:12px 0 0;font-size:1.15rem">{{ config.short_description or 'Professional gaming config.' }}</h2>
+      <div style="display:flex;gap:9px;margin-top:12px"><span class="status approved">★ {{ avg }}</span><span class="status">{{ config.download_count }} yuklab olish</span></div>
+      <div class="detail-price">{{ '%.0f'|format(config.price) }} UZS</div>
+      <div style="display:grid;gap:9px">
+        {% if purchased %}
+        <a class="primary-btn-lg" style="width:100%;text-align:center" data-no-transition href="{{ url_for('payments.download', order_id=purchased_order_id, config_id=config.id) }}">⬇ Configni yuklab olish</a>
+        <div class="small-muted" style="margin-top:7px">Bu config sizning xaridlaringizdan mavjud.</div>
+        {% else %}
+        <form method="post" action="{{ url_for('marketplace.buy', id=config.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="primary-btn-lg" style="width:100%" type="submit">Hozir xarid qilish →</button></form>
+        <form method="post" action="{{ url_for('marketplace.cart_add', id=config.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="secondary-btn" style="width:100%" type="submit">Savatchaga qo‘shish</button></form>
+        {% endif %}
+        <form method="post" action="{{ url_for('marketplace.wishlist_toggle', id=config.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="secondary-btn" style="width:100%" type="submit">{{ '♥ Sevimlilardan olib tashlash' if wishlisted else '♡ Sevimlilarga qo‘shish' }}</button></form>
+      </div>
+      <div style="margin-top:16px">
+        <div class="stat-line"><span>O‘yin</span><strong>{{ config.game.name if config.game is defined and config.game else 'CS 1.6' }}</strong></div><div class="stat-line"><span>Versiya</span><strong>{{ config.version or '—' }}</strong></div><div class="stat-line"><span>Fayl</span><strong>{{ config.file_original_name }}</strong></div><div class="stat-line"><span>Hajm</span><strong>{{ (config.file_size/1024)|round(1) }} KB</strong></div>
+      </div>
+    </div></div>
+    <div class="panel" style="margin-top:12px"><div class="panel-body"><div class="small-muted">Bu sotuvchidan yana config kerakmi?</div><a class="secondary-btn" style="width:100%;margin-top:9px" href="{{ url_for('main.seller_public', nickname=(config.seller.nickname if config.seller else '')) }}">Sotuvchi profilini ko‘rish</a></div></div>
+  </aside>
+</div>
+<div class="panel" style="margin-top:18px;padding:20px"><strong>Muammo haqida xabar berish</strong><form method="post" action="{{ url_for('business.report_config',id=config.id) }}" style="display:grid;gap:8px;margin-top:12px"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><select name="reason"><option value="TAQIQLANGAN_FAYL">Taqiqlangan fayl</option><option value="NOTO‘G‘RI_TAVSIF">Noto‘g‘ri tavsif</option><option value="FIRIBGARLIK">Firibgarlik</option><option value="MUALLIFLIK">Mualliflik huquqi</option><option value="BOSHQA">Boshqa</option></select><textarea name="details" rows="4" placeholder="Qo‘shimcha ma’lumot..."></textarea><button class="secondary-btn">Xabar berish</button></form></div>
+{% endblock %}

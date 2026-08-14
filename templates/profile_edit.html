@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Profilni tahrirlash — CwHUB{% endblock %}
+{% block content %}
+<div class="form-shell">
+  <div class="page-head"><div><span class="eyebrow">Profil</span><h1 class="page-title" style="margin-top:8px">Profilni tahrirlash</h1><div class="page-kicker">Rasm, foydalanuvchi nomi va ixtiyoriy tavsifni yangilang.</div></div></div>
+  <div class="panel"><div class="panel-body"><form method="post" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-grid">
+      <div class="field"><label class="label">Foydalanuvchi nomi *</label>{{ form.username(class='form-control', placeholder='username') }}{% for e in form.username.errors %}<div class="field-error">{{ e }}</div>{% endfor %}</div>
+      <div class="field"><label class="label">Nik (nickname) <span class="small-muted">(ixtiyoriy)</span></label>{{ form.nickname(class='form-control', placeholder='Ko‘rinadigan nik') }}</div><div class="field"><label class="label">Profil rasmi <span class="small-muted">(ixtiyoriy)</span></label><label class="upload-drop" data-dropzone><input type="file" name="avatar" accept=".png,.jpg,.jpeg,.webp" data-preview="profile-avatar-preview"><strong>Profil rasmini tanlang</strong><div class="hint">PNG / JPG / WEBP · 5 MB gacha</div><div class="file-selected" data-file-name><span>Tanlangan fayl:</span> —</div></label>{% for e in form.avatar.errors %}<div class="field-error">{{ e }}</div>{% endfor %}<img id="profile-avatar-preview" class="profile-avatar-preview" alt="Ko‘rish" style="display:none"></div>
+      <div class="field full"><label class="label">O‘zingiz haqingizda <span class="small-muted">(ixtiyoriy)</span></label>{{ form.description(class='form-control', rows='5', placeholder='Masalan: CS 1.6 bilan shug‘ullanaman, configlar tayyorlayman...') }}{% for e in form.description.errors %}<div class="field-error">{{ e }}</div>{% endfor %}</div>
+      <div class="full"><button class="primary-btn-lg">O‘zgarishlarni saqlash</button></div>
+    </div>
+  </form></div></div>
+</div>
+{% endblock %}

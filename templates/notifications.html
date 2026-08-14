@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}Bildirishnomalar — CwHUB{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1 class="page-title">Bildirishnomalar</h1><div class="page-kicker">So‘nggi marketplace updates.</div></div></div>
+<div style="display:grid;gap:10px">{% for n in items %}<div class="panel"><div class="panel-body"><div style="display:flex;justify-content:space-between;gap:12px"><strong>{{ n.title }}</strong><span class="small-muted">{{ n.created_at.strftime('%d.%m.%Y %H:%M') }}</span></div><div style="color:var(--muted);margin-top:5px">{{ n.message }}</div></div></div>{% else %}<div class="empty-state"><h3>No notifications</h3><p>Yangiliklar shu yerda ko‘rinadi.</p></div>{% endfor %}</div>
+{% endblock %}

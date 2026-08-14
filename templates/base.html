@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#121214">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="description" content="CwHUB — CS 1.6 configlar va fayllar marketplacei.">
+  <title>{% block title %}CwHUB — CS 1.6 Configlar Platformasi{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('assets_css') }}?v=312">
+  {% block head %}{% endblock %}
+</head>
+<body class="page-shell page-ready">
+  <div class="page-progress" data-page-progress></div>
+  <div class="page-transition-overlay" data-page-transition aria-hidden="true">
+    <div class="page-transition-card">
+      <div class="page-spinner"></div>
+      <div class="page-transition-text">Sahifa yuklanmoqda…</div>
+    </div>
+  </div>
+  <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <button class="icon-btn mobile-only mobile-nav-toggle" type="button" data-mobile-nav aria-label="Menyu">☰</button>
+      <a class="brand" href="{{ url_for('main.index') }}"><img class="brand-logo" src="{{ url_for('assets_image', filename='cwhub-logo.jpg') }}?v=312" alt="CwHUB"></a>
+      <nav class="main-nav desktop-only">
+        <a href="{{ url_for('marketplace.configs') }}">Configlar</a>
+        <a href="{{ url_for('marketplace.configs', sort='popular') }}">Ommabop</a>
+        <a href="{{ url_for('main.index') }}#categories">Kategoriyalar</a>
+        <a href="{{ url_for('main.rules') }}">Kafolat va qoidalar</a><a href="{{ url_for('business.plans') }}">Tariflar</a>
+      </nav>
+      <form class="top-search desktop-only" action="{{ url_for('marketplace.configs') }}" method="get"><span class="search-glyph">⌕</span><input name="q" value="{{ request.args.get('q','') }}" placeholder="Config, sotuvchi yoki kategoriya qidiring…" autocomplete="off"><kbd>Ctrl K</kbd></form>
+      <div class="top-actions">
+        {% if current_user.is_authenticated %}
+          {% if current_user.seller_profile and current_user.seller_profile.approved or current_user.is_super_admin %}<a class="header-upload-btn desktop-only" href="{{ url_for('seller.add_config') }}">＋ Config yuklash</a>{% endif %}
+          <a class="icon-btn" href="{{ url_for('marketplace.wishlist') }}" aria-label="Sevimlilar">♡</a><a class="icon-btn" href="{{ url_for('marketplace.cart') }}" aria-label="Savatcha">🛒</a>
+          <a class="icon-btn" href="{{ url_for('main.notifications') }}" aria-label="Bildirishnomalar">◌{% if unread_notifications %}<b class="notif-dot">{{ unread_notifications if unread_notifications < 10 else '9+' }}</b>{% endif %}</a>
+          <div class="user-menu"><button class="user-chip" type="button" data-user-menu><span class="avatar">{{ current_user.username[:1]|upper }}</span><span class="desktop-only">@{{ current_user.username }}{% if current_user.is_verified %}<span class="verified-badge" title="Tasdiqlangan">✓</span>{% endif %}</span><span class="chev">⌄</span></button>
+            <div class="menu-popover" data-user-popover>
+              <div class="menu-head"><strong>@{{ current_user.username }}{% if current_user.is_verified %}<span class="verified-badge">✓</span>{% endif %}</strong><span>{{ current_user.role|uz_role }}</span></div>
+              <a href="{{ url_for('main.profile') }}">Profilim</a><a href="{{ url_for('orders.index') }}">Xaridlarim</a>
+              {% if current_user.seller_profile and current_user.seller_profile.approved or current_user.is_super_admin %}<a href="{{ url_for('seller.dashboard') }}">Sotuvchi paneli</a>{% elif not current_user.seller_profile %}<a href="{{ url_for('seller.apply') }}">Sotuvchi bo‘lish</a>{% else %}<a href="{{ url_for('seller.verification_status') }}">Sotuvchi verifikatsiyasi</a>{% endif %}
+              {% if current_user.is_admin %}<a href="{{ url_for('admin.dashboard') }}">Administrator paneli</a>{% endif %}
+              <a href="{{ url_for('main.support') }}">Yordam</a><a href="{{ url_for('business.tickets') }}">Yordam biletlari</a><div class="menu-divider"></div>
+              <form method="post" action="{{ url_for('auth.logout') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit" class="menu-link danger">Chiqish</button></form>
+            </div>
+          </div>
+        {% else %}<a class="ghost-btn" href="{{ url_for('auth.login') }}">Kirish</a><a class="primary-btn" href="{{ url_for('auth.register') }}">Ro‘yxatdan o‘tish</a>{% endif %}
+      </div>
+    </div>
+    <div class="mobile-nav-panel" data-mobile-nav-panel>
+      <a href="{{ url_for('marketplace.configs') }}">Configlar</a>
+      <a href="{{ url_for('marketplace.configs', sort='popular') }}">Ommabop</a>
+      <a href="{{ url_for('main.index') }}#categories">Kategoriyalar</a>
+      <a href="{{ url_for('main.rules') }}">Kafolat va qoidalar</a>
+      <a href="{{ url_for('business.plans') }}">Tariflar</a>
+      {% if current_user.is_authenticated and (current_user.seller_profile and current_user.seller_profile.approved or current_user.is_super_admin) %}<a href="{{ url_for('seller.dashboard') }}">Sotuvchi paneli</a>{% else %}<a href="{{ url_for('seller.apply') }}">Sotuvchi bo‘lish</a>{% endif %}
+      <a href="{{ url_for('main.support') }}">Yordam</a>
+    </div>
+    <div class="mobile-search mobile-only"><form action="{{ url_for('marketplace.configs') }}" method="get"><span>⌕</span><input name="q" placeholder="Config qidiring…"></form></div>
+  </header>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}<div class="toast-stack">{% for category, message in messages %}<div class="toast-card {{ 'toast-error' if category in ['danger','error'] else 'toast-success' if category == 'success' else 'toast-info' }}" data-auto-dismiss><span class="toast-icon">{{ '✓' if category == 'success' else '!' }}</span><div><strong>{{ {'success':'Muvaffaqiyat','danger':'Xato','warning':'Ogohlantirish','info':'Ma’lumot'}.get(category,category|capitalize) }}</strong><p>{{ message }}</p></div><button type="button" class="toast-close" data-dismiss>×</button></div>{% endfor %}</div>{% endwith %}
+  {% if current_user.is_authenticated %}<div class="container announce-wrap">{% if active_announcement %}<div class="announce announce-{{ active_announcement.level|lower }}"><strong>{{ active_announcement.title }}</strong><span>{{ active_announcement.message }}</span></div>{% endif %}</div>{% endif %}
+  {% if request.endpoint != 'main.index' %}<div class="container page-back-wrap"><button type="button" class="back-btn" data-smart-back>← <span>Orqaga qaytish</span></button></div>{% endif %}
+  <main class="site-main{% block main_class %}{% endblock %}">{% block content %}{% endblock %}</main>
+  <footer class="site-footer"><div class="container footer-grid">
+    <div><a class="brand footer-brand" href="{{ url_for('main.index') }}"><img class="brand-logo" src="{{ url_for('assets_image', filename='cwhub-logo.jpg') }}?v=312" alt="CwHUB"></a><p>CS 1.6 configlar va fayllar uchun tezkor, xavfsiz va zamonaviy platforma.</p></div>
+    <div><strong>Savdo maydoni</strong><a href="{{ url_for('marketplace.configs') }}">Barcha configlar</a><a href="{{ url_for('main.rules') }}">Kafolat va qoidalar</a><a href="{{ url_for('business.plans') }}">Tariflar</a><a href="{{ url_for('main.terms') }}">Foydalanish shartlari</a><a href="{{ url_for('main.privacy') }}">Maxfiylik siyosati</a></div>
+    <div><strong>Sotuvchilar</strong>{% if current_user.is_authenticated and (current_user.seller_profile and current_user.seller_profile.approved or current_user.is_super_admin) %}<a href="{{ url_for('seller.add_config') }}">Config yuklash</a><a href="{{ url_for('seller.dashboard') }}">Sotuvchi paneli</a>{% else %}<a href="{{ url_for('seller.apply') }}">Sotuvchi bo‘lish</a>{% endif %}</div>
+    <div><strong>Yordam</strong><a href="{{ url_for('main.support') }}">Telegram yordam</a><a href="{{ support_telegram }}" target="_blank" rel="noopener">{{ support_telegram_handle }}</a><span>© 2026 CwHUB</span></div>
+    <div class="footer-admin-cta"><a class="footer-admin-btn" href="{{ url_for('main.admin_apply_info') }}">⚙ Administrator bo‘lish</a><span>Hamkorlik va yordamchi boshqaruv bo‘yicha ariza</span></div>
+  </div></footer>
+  <script src="{{ url_for('assets_js') }}?v=312" defer></script>{% block scripts %}{% endblock %}
+</body></html>

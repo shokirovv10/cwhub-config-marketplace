@@ -1,0 +1,17 @@
+Flask==3.1.1
+Flask-SQLAlchemy==3.1.1
+Flask-Login==0.6.3
+Flask-WTF==1.2.2
+Flask-Limiter==3.12
+Flask-Migrate==4.1.0
+WTForms==3.2.1
+python-dotenv==1.1.1
+psycopg2-binary==2.9.12
+Pillow==11.3.0
+openpyxl==3.1.5
+reportlab==4.4.3
+boto3==1.40.6
+
+gunicorn==23.0.0
+
+email-validator==2.3.0

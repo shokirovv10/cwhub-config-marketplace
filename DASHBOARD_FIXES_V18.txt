@@ -1,0 +1,10 @@
+CwHUB V18 Dashboard Stability Fixes
+
+- Resilient /assets/css/app.css and /assets/js/app.js asset routes.
+- Resilient logo/image asset route.
+- /admin and /admin/dashboard both work.
+- /seller and /seller/dashboard both work.
+- Trailing-slash aliases for common seller pages.
+- Fixed seller_profile naming in templates/routes.
+- Dashboard sidebar/content overflow and responsive stability fixes.
+- Cache-busted dashboard assets.

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Administratorlik arizalari — CwHUB{% endblock %}
+{% block content %}
+<div class="dashboard-shell"><div>{% include 'partials/dashboard_sidebar.html' %}</div><section class="dashboard-content">
+  <div class="page-head"><div><span class="eyebrow">Kadrlar</span><h1 class="page-title">Administratorlik arizalari</h1><div class="page-kicker">Yo‘nalish, tajriba va javoblar asosida nomzodlarni baholang. Tasdiqlanganda tanlangan yo‘nalish bo‘yicha vakolat avtomatik beriladi.</div></div></div>
+  <div class="application-list">
+    {% for a in applications %}
+      <article class="application-card">
+        <div class="application-card-head">
+          <div><strong>@{{ a.user.username }}</strong>{% if a.user.is_verified %}<span class="verified-badge">✓</span>{% endif %}<div class="small-muted">{{ a.user.email }} · {{ a.created_at.strftime('%d.%m.%Y %H:%M') }}</div></div>
+          <div class="application-meta"><span class="role-chip role-{{ a.desired_role|lower }}">{{ a.desired_role }}</span><span class="status">{{ a.status|uz_status }}</span></div>
+        </div>
+        <div class="application-grid">
+          <div class="application-answer"><span>TAJRIBA</span><p>{{ a.experience }}</p></div>
+          <div class="application-answer"><span>NEGA CWHUB?</span><p>{{ a.motivation }}</p></div>
+          <div class="application-answer"><span>VAQT</span><p>{{ a.availability }}</p></div>
+        </div>
+        <form method="post" action="{{ url_for('admin.admin_application_status',id=a.id) }}" class="application-action-box">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <textarea class="form-control" name="note" placeholder="Admin izohi">{{ a.admin_note or '' }}</textarea>
+          <div class="application-actions"><button name="status" value="APPROVED" class="mini-btn primary">Tasdiqlash</button><button name="status" value="REJECTED" class="danger-btn">Rad etish</button><button name="status" value="PENDING" class="mini-btn">Kutilmoqda</button></div>
+        </form>
+      </article>
+    {% else %}<div class="panel"><div class="empty-state">Arizalar yo‘q.</div></div>{% endfor %}
+  </div>
+</section></div>
+{% endblock %}
